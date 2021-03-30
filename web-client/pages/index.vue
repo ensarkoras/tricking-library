@@ -1,21 +1,63 @@
 <template>
 <div>
-  <v-file-input @change="handleFile" accept="video/*" label="Click here to select a file"></v-file-input>
-
   <div v-if="tricks">
-    <p v-for="t in tricks">
+    <div v-for="t in tricks">
       {{ t.name}}
-    </p>
+      <div>
+        <video width="400" controls :src="`http://localhost:5000/api/videos/${t.video}`"></video>
+      </div>
+    </div>
   </div>
 
-  <div>
-    <v-text-field v-model="trickName" label="Tricking Name"></v-text-field>
-    <v-btn @click="saveTrick">Save Trick</v-btn>
-  </div>
+  <v-stepper v-model="step">
+    <v-stepper-header>
+      <v-stepper-step
+        :complete="step > 1"
+        step="1"
+      >
+        Upload Video
+      </v-stepper-step>
 
-  {{  message }}
-  <v-btn @click="reset">Reset Message</v-btn>
-  <v-btn @click="resetTricks">Reset Tricking</v-btn>
+      <v-divider></v-divider>
+
+      <v-stepper-step
+        :complete="step > 2"
+        step="2"
+      >
+        Trick Information
+      </v-stepper-step>
+
+      <v-divider></v-divider>
+
+      <v-stepper-step step="3">
+        Confirmation
+      </v-stepper-step>
+    </v-stepper-header>
+
+    <v-stepper-items>
+      <v-stepper-content step="1">
+        <div>
+          <v-file-input @change="handleFile" accept="video/*" label="Click here to select a file"></v-file-input>
+        </div>
+
+      </v-stepper-content>
+
+      <v-stepper-content step="2">
+        <div>
+          <div>
+            <v-text-field v-model="trickName" label="Tricking Name"></v-text-field>
+            <v-btn @click="saveTrick">Save Trick</v-btn>
+          </div>
+        </div>
+      </v-stepper-content>
+
+      <v-stepper-content step="3">
+        <div>
+          Success
+        </div>
+      </v-stepper-content>
+    </v-stepper-items>
+  </v-stepper>
 
 </div>
 </template>
@@ -27,45 +69,43 @@ import {mapState, mapActions, mapMutations} from 'vuex'
 
 export default {
   data : ()=> ({
-    trickName : ""
+    trickName : "",
+    step :1
   }),
-  /*asyncData(payload){
-    return axios.get("http://localhost:5000/api/home")
-      .then(({data}) => {
-        return { message : data}
-      })
-  },*/
+
   computed : {
-    ...mapState({
-      message : state => state.message
-    }),
-    ...mapState('tricks', {
-      tricks : state => state.tricks
-    })
+    ...mapState('tricks',['tricks']),
+    ...mapState('videos', ['uploadPromise']),
   },
   methods : {
-    ...mapMutations(['reset']),
-    ...mapMutations('tricks', {
-      resetTricks : 'reset'
+    ...mapMutations('videos', {
+      resetVideos : 'reset'
     }),
     ...mapActions('tricks', ['createTrick']),
-    async saveTrick(){
-      await this.createTrick({ trick : { name : this.trickName} })
-      this.trickName = ""
-    },
+    ...mapActions('videos', ['startVideoUpload']),
+
     async handleFile(file){
       if(!file) return;
 
       const form = new FormData()
       form.append("video", file)
+      this.startVideoUpload({form})
+      this.step ++
+    },
 
-      const result = await axios.post("http://localhost:5000/api/videos", form)
-      console.log("Result : ", result)
+    async saveTrick(){
+      if(!this.uploadPromise){
+        console.log("uploadTask is null")
+        return;
+      }
 
-    }
+      const video = await this.uploadPromise
+      await this.createTrick({ trick : { name : this.trickName, video} })
+      this.trickName = ""
+      this.step ++
+      this.resetVideos();
+    },
   }
- /* async fetch(){
-    await this.$store.dispatch("fetchMessage")
-  }*/
+
 }
 </script>
