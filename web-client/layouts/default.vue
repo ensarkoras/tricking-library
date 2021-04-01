@@ -10,16 +10,8 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn
-        depressed
-        @click="toggleActivity"
-      >
-        Upload
-      </v-btn>
-
+      <video-upload />
     </v-app-bar>
-
-    <video-upload />
 
     <v-main>
       <nuxt />
@@ -28,11 +20,10 @@
 </template>
 
 <script>
-import {mapMutations} from 'vuex'
+
 import VideoUpload from '../components/video-upload'
 export default {
   methods : {
-    ...mapMutations('videos', ['toggleActivity'])
   },
   components : {
     VideoUpload
