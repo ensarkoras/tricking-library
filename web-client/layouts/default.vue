@@ -10,7 +10,8 @@
 
       <v-spacer></v-spacer>
 
-      <video-upload />
+      <content-creation-dialog></content-creation-dialog>
+
     </v-app-bar>
 
     <v-main>
@@ -21,12 +22,12 @@
 
 <script>
 
-import VideoUpload from '../components/video-upload'
+
 export default {
   methods : {
   },
   components : {
-    VideoUpload
+
   }
 
 }
