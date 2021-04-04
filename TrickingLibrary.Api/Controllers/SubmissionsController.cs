@@ -14,14 +14,14 @@ namespace TrickingLibrary.Api.Controllers
     {
         private readonly AppDbContext _ctx;
 
-        public SubmissionsController(AppDbContext  ctx)
+        public SubmissionsController(AppDbContext ctx)
         {
             _ctx = ctx;
         }
-        
+
         [HttpGet]
         public IEnumerable<Submission> All() => _ctx.Submissions.ToList();
-        
+
         [HttpGet("{id}")]
         public Submission Get(int id) => _ctx.Submissions.FirstOrDefault(x => x.Id.Equals(id));
 
@@ -40,6 +40,7 @@ namespace TrickingLibrary.Api.Controllers
             {
                 return null;
             }
+
             _ctx.Add(submission);
             await _ctx.SaveChangesAsync();
             return submission;
@@ -53,10 +54,10 @@ namespace TrickingLibrary.Api.Controllers
             {
                 return NotFound();
             }
+
             submission.Deleted = true;
             await _ctx.SaveChangesAsync();
             return Ok();
         }
-
     }
 }
