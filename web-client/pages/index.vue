@@ -21,9 +21,10 @@ export default {
   computed : {
     ...mapState('tricks',['tricks']),
   },
-  async fetch(){
+
+  /*async fetch(){
     await this.$store.dispatch("tricks/fetchTricks", null, { root : true})
-  }
+  }*/
 
 }
 </script>
