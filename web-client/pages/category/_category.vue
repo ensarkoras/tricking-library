@@ -1,20 +1,7 @@
 <template>
   <div class="d-flex mt-3 justify-center align-start">
 
-    <div class="mx-2">
-      <v-text-field
-        label="Search"
-        placeholder="e.g. cork/flip"
-        prepend-inner-icon="mdi-magnify"
-        outlined
-        v-model="filter"
-      ></v-text-field>
-      <div v-for="t in filteredTricks">
-         {{t.name}} - {{ t.description}}
-
-      </div>
-    </div>
-
+    <trick-list :tricks="tricks" class="mx-2"></trick-list>
 
       <v-sheet class="pa-3 mx-2 sticky" v-if="category">
         <div class="text-h6">{{ category.name }}</div>
@@ -34,16 +21,9 @@ export default {
   data:() => ({
     category : null,
     tricks : [],
-    filter :''
   }),
   computed : {
     ...mapGetters('tricks', ['categoryById']),
-    filteredTricks(){
-      if (!this.filter) return this.tricks
-
-      const normalize = this.filter.trim().toLowerCase();
-      return this.tricks.filter(t=> t.name.toLowerCase().includes(normalize) || t.description.toLowerCase().includes(normalize))
-    }
   },
   head() {
     if(!this.category) return {}
