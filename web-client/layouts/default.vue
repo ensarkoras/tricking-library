@@ -6,7 +6,7 @@
       app
     >
 
-      <v-toolbar-title>Tricking Library</v-toolbar-title>
+      <nuxt-link to="/" class="text-h5 text--primary" style="text-decoration: none">Tricking Library</nuxt-link>
 
       <v-spacer></v-spacer>
 

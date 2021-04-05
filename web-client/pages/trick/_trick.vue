@@ -1,27 +1,25 @@
 <template>
-  <div class="d-flex justify-center align-start">
+  <div class="d-flex mt-3 justify-center align-start">
 
-    <div class="mx-2" v-if="submissions">
+    <div class="mx-3" v-if="submissions">
 
-      <div v-for="x in 1">
+      <div v-for="x in 10">
 
-        <div v-for="s in submissions">
-          {{s.id}} - {{ s.description}} - {{ s.trickId}}
-          <div>
-            <video width="400" controls :src="`http://localhost:5000/api/videos/${s.video}`"></video>
-          </div>
-        </div>
+        <v-card class="mb-3" v-for="s in submissions" :key="`${x}-${trick.id}-${s.id}`">
+          <video-player :video="s.video" :key="`v-${x}-${trick.id}-${s.id}`"/>
+          <v-card-text>{{ s.description}}</v-card-text>
+        </v-card>
 
       </div>
 
     </div>
 
 
-      <v-sheet class="pa-3 ma-2 sticky">
+      <v-sheet class="pa-3 sticky">
         <div class="text-h5">
           <span>{{ trick.name }}</span>
           <v-chip class="ma-2" small :to="`/difficulty/${difficulty.id}`">
-            {{ difficulty.name }} Difficulty
+            {{ difficulty.name }}
           </v-chip>
         </div>
         <v-divider class="my-1"></v-divider>
@@ -44,6 +42,8 @@
 </template>
 
 <script>
+// todo clean up submission id's
+
 import {mapState, mapGetters} from 'vuex'
 
 export default {
