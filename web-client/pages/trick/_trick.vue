@@ -1,21 +1,17 @@
 <template>
-  <div class="d-flex mt-3 justify-center align-start">
-
-    <div class="mx-3" v-if="submissions">
-
-      <div v-for="x in 10">
-
-        <v-card class="mb-3" v-for="s in submissions" :key="`${x}-${trick.id}-${s.id}`">
-          <video-player :video="s.video" :key="`v-${x}-${trick.id}-${s.id}`"/>
-          <v-card-text>{{ s.description}}</v-card-text>
-        </v-card>
-
+  <item-content-layout>
+    <template v-slot:content>
+      <div v-if="submissions">
+        <div v-for="x in 10">
+          <v-card class="mb-3" v-for="s in submissions" :key="`${x}-${trick.id}-${s.id}`">
+            <video-player :video="s.video" :key="`v-${x}-${trick.id}-${s.id}`"/>
+            <v-card-text>{{ s.description}}</v-card-text>
+          </v-card>
+        </div>
       </div>
+    </template>
+    <template v-slot:item>
 
-    </div>
-
-
-      <v-sheet class="pa-3 sticky">
         <div class="text-h5">
           <span>{{ trick.name }}</span>
           <v-chip class="ma-2" small :to="`/difficulty/${difficulty.id}`">
@@ -34,10 +30,9 @@
             </v-chip>
           </v-chip-group>
         </div>
-      </v-sheet>
 
-
-  </div>
+    </template>
+  </item-content-layout>
 
 </template>
 

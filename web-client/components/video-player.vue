@@ -37,7 +37,7 @@ export default {
   .video-container{
     display: flex;
     position: relative;
-    width: 480px;
+    width: 100%;
     overflow: hidden;
 
     .play-button {

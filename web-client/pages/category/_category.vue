@@ -1,17 +1,16 @@
 <template>
-  <div class="d-flex mt-3 justify-center align-start">
-
-    <trick-list :tricks="tricks" class="mx-2"></trick-list>
-
-      <v-sheet class="pa-3 mx-2 sticky" v-if="category">
+  <item-content-layout>
+    <template v-slot:content>
+      <trick-list :tricks="tricks"></trick-list>
+    </template>
+    <template v-slot:item>
+      <div v-if="category">
         <div class="text-h6">{{ category.name }}</div>
         <v-divider class="my-1"></v-divider>
         <div class="text-body-2">{{ category.description }}</div>
-      </v-sheet>
-
-
-  </div>
-
+      </div>
+    </template>
+  </item-content-layout>
 </template>
 
 <script>
