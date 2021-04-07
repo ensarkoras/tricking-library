@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using TrickingLibrary.Api.BackgroundServices;
 using TrickingLibrary.Data;
 
 namespace TrickingLibrary.Api
@@ -20,6 +22,9 @@ namespace TrickingLibrary.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            services.AddHostedService<VideoEditingBackgroundService>();
+            services.AddSingleton( _ => Channel.CreateUnbounded<EditVideoMessage>());
 
             //services.AddSingleton<TrickyStore>();
             services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("Dev"));
