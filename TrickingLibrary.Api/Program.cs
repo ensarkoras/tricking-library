@@ -51,7 +51,7 @@ namespace TrickingLibrary.Api
                             new TrickRelationship {PrerequisiteId = "backwards-roll"}
                         }
                     });
-                    ctx.Add(new Submission
+                    /*ctx.Add(new Submission
                     {
                         TrickId = "back-flip",
                         Description = "Test description, I've tried to go for max height",
@@ -64,7 +64,7 @@ namespace TrickingLibrary.Api
                         Description = "Test description, I've tried to go for min height",
                         Video = "vid4.mp4",
                         VideoProcessed = true
-                    });
+                    });*/
                     ctx.SaveChanges();
                 }
             }

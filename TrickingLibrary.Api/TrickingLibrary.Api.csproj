@@ -7,6 +7,7 @@
     <ItemGroup>
       <Folder Include="ffmpeg" />
       <Folder Include="Models" />
+      <Folder Include="wwwroot" />
     </ItemGroup>
 
     <ItemGroup>
