@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using TrickingLibrary.Data;
 using TrickingLibrary.Models;
+using TrickingLibrary.Models.Moderation;
 
 namespace TrickingLibrary.Api
 {
@@ -41,6 +42,14 @@ namespace TrickingLibrary.Api
                     });
                     ctx.Add(new Trick
                     {
+                        Id = "forwards-roll",
+                        Name = "Forwards Roll",
+                        Description = "This is a test forwards roll",
+                        Difficulty = "easy",
+                        TrickCategories = new List<TrickCategory> {new TrickCategory {CategoryId = "flip"}}
+                    });
+                    ctx.Add(new Trick
+                    {
                         Id = "back-flip",
                         Name = "Back Flip",
                         Description = "This is a test back flip",
@@ -51,20 +60,34 @@ namespace TrickingLibrary.Api
                             new TrickRelationship {PrerequisiteId = "backwards-roll"}
                         }
                     });
-                    /*ctx.Add(new Submission
+                    ctx.Add(new Submission
                     {
                         TrickId = "back-flip",
                         Description = "Test description, I've tried to go for max height",
-                        Video = "vid3.mp4",
+                        Video = new Video
+                        {
+                            VideoLink = "one.mp4",
+                            ThumbLink = "one.jpg"
+                        },
                         VideoProcessed = true,
                     });
                     ctx.Add(new Submission
                     {
                         TrickId = "back-flip",
                         Description = "Test description, I've tried to go for min height",
-                        Video = "vid4.mp4",
+                        Video = new Video
+                        {
+                            VideoLink = "two.mp4",
+                            ThumbLink = "two.jpg"
+                        },
                         VideoProcessed = true
-                    });*/
+                    });
+                    ctx.Add(new ModerationItem
+                    {
+                        Target = "forwards-roll",
+                        Type = ModerationTypes.Trick
+
+                    });
                     ctx.SaveChanges();
                 }
             }
