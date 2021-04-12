@@ -4,7 +4,40 @@
       {{item.description}}
     </div>
 
-    <comment-section :comments="comments" @send="send"/>
+    <v-row>
+      <v-col cols="7">
+        <comment-section :comments="comments" @send="sendComment"/>
+      </v-col>
+      <v-col cols="5">
+        <v-card>
+          <v-card-title>Reviews ( {{approveCount}} / 3)</v-card-title>
+          <v-card-text>
+            <div v-if="reviews.length > 0">
+              <div v-for="review in reviews" :key="`review-${review.id}`">
+                <v-icon :color="reviewStatusColor(review.status)">{{reviewStatusIcon(review.status)}}</v-icon>
+                Username
+                <span v-if="review.comment">- {{ review.comment}}</span>
+              </div>
+            </div>
+            <div v-else>No Reviews</div>
+
+            <v-divider class="my-3"></v-divider>
+            <v-text-field label="Review Comment" v-model="reviewComment"></v-text-field>
+          </v-card-text>
+          <v-card-actions class="justify-center">
+            <v-btn v-for="action in reviewActions"
+                   :disabled="action.disabled"
+                   :color="reviewStatusColor(action.status)"
+                   :key="`ra-${action.title}`"
+                    @click="createReview(action.status)">
+              <v-icon>{{reviewStatusIcon(action.status)}}</v-icon>
+              {{action.title}}</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
+
+
 
     <!--    <div class="my-1" v-for="c in comments">-->
 
@@ -18,20 +51,45 @@
 </template>
 
 <script>
-import CommentSection from "../../../../components/comments/comment-section";
+import CommentSection from "@/components/comments/comment-section";
+
 const endpointResolver = (type) => {
   if (type === 'trick') return 'tricks'
 }
-const commentWithReplies = comment => ({
+
+const REVIEW_STATUS = {
+  APPROVED :0,
+  REJECTED : 1,
+  WAITING :2
+}
+
+const reviewStatusColor = (status) => {
+  if (REVIEW_STATUS.APPROVED === status) return "green"
+  if (REVIEW_STATUS.REJECTED === status) return "red"
+  if (REVIEW_STATUS.WAITING === status) return "orange"
+  return ''
+}
+
+const reviewStatusIcon = (icon) => {
+  if (REVIEW_STATUS.APPROVED === icon) return "mdi-check"
+  if (REVIEW_STATUS.REJECTED === icon) return "mdi-close"
+  if (REVIEW_STATUS.WAITING === icon) return "mdi-clock"
+  return ''
+}
+
+
+
+/*const commentWithReplies = comment => ({
   ...comment,
   replies: []
-});
+});*/
 export default {
   components: {CommentSection},
   data: () => ({
     item: null,
     comments: [],
-    comment: "",
+    reviews : [],
+    reviewComment: "",
     replyId: 0,
   }),
   created() {
@@ -40,15 +98,40 @@ export default {
     this.$axios.$get(`/api/${endpoint}/${trickId}`)
       .then((item) => this.item = item)
     this.$axios.$get(`/api/moderation-items/${modId}/comments`)
-      .then((comments) => this.comments = comments.map(commentWithReplies))
+      .then((comments) => this.comments = comments)
+    this.$axios.$get(`/api/moderation-items/${modId}/reviews`)
+      .then((reviews) => this.reviews = reviews)
   },
   methods: {
-    send(content) {
+    sendComment(content) {
       const {modId} = this.$route.params
       return this.$axios.$post(`/api/moderation-items/${modId}/comments`,
         {content})
         .then((comment) => this.comments.push(comment))
     },
+    createReview(status) {
+      const {modId} = this.$route.params
+      return this.$axios.$post(`/api/moderation-items/${modId}/reviews`,
+        {
+          comment : this.reviewComment,
+          status : status
+        })
+        .then((review) => this.reviews.push(review))
+    },
+    reviewStatusColor,
+    reviewStatusIcon
+  },
+  computed : {
+    reviewActions() {
+      return [
+        { title :"Approve", status : REVIEW_STATUS.APPROVED, disabled : false},
+        { title :"Reject", status : REVIEW_STATUS.REJECTED, disabled : !this.reviewComment},
+        { title :"Wait", status : REVIEW_STATUS.WAITING, disabled: !this.reviewComment},
+      ]
+    },
+    approveCount(){
+      return this.reviews.filter(x => x.status=== REVIEW_STATUS.APPROVED).length
+    }
   }
 }
 </script>

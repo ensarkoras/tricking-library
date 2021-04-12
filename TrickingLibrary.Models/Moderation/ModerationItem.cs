@@ -8,5 +8,7 @@ namespace TrickingLibrary.Models.Moderation
         public string Type { get; set; }
 
         public IList<Comment> Comments { get; set; } = new List<Comment>();
+
+        public IList<Review> Reviews { get; set; } = new List<Review>();
     }
 }
